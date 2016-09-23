@@ -1,0 +1,46 @@
+---
+title: "Browser"
+author: "Aina Petronytė"
+date: '2016 m rugsėjis 21 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##browser()
+
+browser is a function that interrupts the execution of an expression and allows the inspection of the environment where browser was called from. browser is like debug but allows exploration in just a specific location of the function. A call to browser can be included in the body of a function. When reached, this causes a pause in the execution of the current expression and allows access to the R interpreter.
+
+The purpose of the text and condition arguments are to allow helper programs (e.g., external debuggers) to insert specific values here, so that the specific call to browser (perhaps its location in a source file) can be identified and special processing can be achieved. The values can be retrieved by calling browserText and browserCondition.
+
+The purpose of the expr argument is to allow for the illusion of conditional debugging. It is an illusion, because execution is always paused at the call to browser, but control is only passed to the evaluator described below if expr evaluates to TRUE. In most cases it is going to be more efficient to use an if statement in the calling program, but in some cases using this argument will be simpler.
+
+The skipCalls argument should be used when the browser() call is nested within another debugging function: it will look further up the call stack to report its location.
+
+##Example
+I create a simple function with a call to browser, call the function, explore variables within the function, and then tell the function to finish running by using the command c (also may use cont). Instead of c, I could have typed n to go into debugging mode for the remainder of the function call, typed where to learn where exactly the function was called (e.g. perhaps the function was not called directly but was within another function that was executing), or Q to quit the execution of the top-level function and return to the command line. 
+
+```{r, eval=FALSE}
+fcn <- function(x = 1, y){
+  z <- x+y
+  browser()
+  return(z+exp(z))
+}
+
+val <- fcn(3, 5)
+x
+y
+z
+c
+
+val
+```
+Function browse() cannot be evaluated when knitting HTML but R would print 3, 5 and 8 for x, y and z and 2988.958 for val.
+
+##References
+http://rfunction.com/archives/2633#more-2633
+```{r,eval=FALSE}
+?browser
+```

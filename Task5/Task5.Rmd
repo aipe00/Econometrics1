@@ -1,0 +1,90 @@
+---
+title: "Task5"
+author: "Aina Petronytė"
+date: '2016 m rugsėjis 25 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Random variable challenge
+
+Tarkime, kad ridenami trys taisyklingi standartiniai lošimo kauliukai. Fiksuojama iškritusių akučių suma, pažymėkime šį atsitiktinį dydį S.
+Atliekamas Monte-Carlo modeliavimas sugeneruoti 10^5 nepriklausomų atsitiktinio dydžio S realizacijų:
+
+```{r}
+S<-function(n){
+  sum(sample(1:6,n,replace=TRUE))
+}
+imtis<-replicate(10^5,S(3))
+head(imtis)
+```
+
+Randamas teorinis S skirstinys:
+
+```{r, message=FALSE, include=FALSE}
+library(prob)
+```
+```{r}
+variantai <- rolldie(3) #funkcija rasta knygoje Kerns, G. Jay. 2011. “Introduction to Probability and Statistics Using R.”
+sumos <- rowSums(variantai)
+teor.daznis <- table(sumos)
+tikimybes <- matrix(teor.daznis/6^3)
+skirstinys <- tikimybes
+ronames <- c(3:18)
+colnames(skirstinys) <- "tikimybes"
+rownames(skirstinys) <- ronames
+skirstinys
+```
+
+Iš sugeneruotos imties sudaroma santykinių dažnių lentelė ir gautos reikšmės palyginamos su teorinėmis tikimybėmis grafiku ir lentele:
+
+```{r}
+daznis <- table(imtis)
+sdaznis <- matrix(daznis/(10^5))
+lyg <- data.frame(sdaznis, tikimybes, row.names=c(3:18))
+cnames <- c("Santykinis daznis", "Teorine tikimybe")
+colnames(lyg) <- cnames
+lyg #lyginamoji lentele
+plot(daznis/10^5, xlab="Suma", ylab="Daznis", main="Lyginamasis grafikas")
+points(tikimybes, col="red")
+legend(14,0.12,"tikimybes",col="red",pch=1)
+```
+
+Imties santykiniai dažniai panašūs į teorines tikimybes.
+Toliau suskaičiuojamas teorinis S vidurkis bei grafiku iliustruojama, kaip didėjant imčiai nuo 0 iki 10^5 kas 10 vienetų, vidurkio įvertiniai artėja prie teorinės reikšmės:
+
+```{r}
+t.vidurkis <- mean(sumos)
+t.vidurkis #teorinis vidurkis
+vid.ivertiniai=rep(0,10000)
+for(i in 1:10000){
+  vid.ivertiniai[i]=mean(imtis[1:(i*10)])
+}
+x.asis=rep(0,10000)
+for(i in 1:10000){
+  x.asis[i]=i*10
+}
+plot(x.asis, vid.ivertiniai, xlab="Imties dydis", ylab="Vidurkis", main="Vidurkio ivertiniu artejimas prie teorinio vidurkio")
+abline(h=t.vidurkis, col="red")
+legend(6e+04, 10.7, "teorinis vidurkis", col="red", lty=1)
+```
+
+Taip pat suskaičiuojama teorinė S dispersija bei grafiku iliustruojama, kaip didėjant imčiai nuo 0 iki 10^5 kas 10 vienetų, dispersijos įvertiniai artėja prie teorinės reikšmės:
+
+```{r}
+t.dispersija <- var(sumos)
+t.dispersija #teorine dispersija
+disp.ivertiniai=rep(0,10000)
+for(i in 1:10000){
+  disp.ivertiniai[i]=var(imtis[1:(i*10)])
+}
+plot(x.asis, disp.ivertiniai, xlab="Imties dydis", ylab="Dispersija", main="Dispersijos ivertiniu artejimas prie teorines dispersijos")
+abline(h=t.dispersija, col="red")
+legend(6e+04, 9.7, "teorine dispersija", col="red", lty=1)
+```
+
+Informacijos šaltiniai:
+Kerns, G. Jay. 2011. “Introduction to Probability and Statistics Using R.”

@@ -1,6 +1,6 @@
 ---
 title: "Task 6"
-author: "Aina Petronytë"
+author: "Aina PetronytÄ—"
 date: '2016 m spalis 7 d '
 output: html_document
 ---
@@ -11,13 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Swirl rezultatai
 
-Duomenys nuskaitomi naudojant internetinæ nuorodà:
+Duomenys nuskaitomi naudojant internetinÄ™ nuorodÄ…:
 ```{r, message=FALSE}
 require (RCurl)
 data <- read.csv(text=getURL("https://raw.githubusercontent.com/1vbutkus/Econometrics1/master/task6/R_programing_swirlResults.csv"), stringsAsFactors=FALSE) #Kodo saltinis nurodytas pabaigoje
 ```
 
-Tikrinami duomenø tipai:
+Tikrinami duomenÅ³ tipai:
 ```{r}
 pavadinimai <- colnames(data)
 pavadinimai
@@ -37,18 +37,18 @@ class(data$datetime)
 class(data$skipped)
 ```
 
-Kadangi sysTime ir datetime nurodo laikà, tipas character jiems netinkamas, todël pakeièiamas tipas:
+Kadangi sysTime ir datetime nurodo laikÄ…, tipas character jiems netinkamas, todÄ—l pakeiÃ¨iamas tipas:
 ```{r}
 data$sysTime <- strptime(data$sysTime,"%Y-%m-%d %H:%M:%S")
 data$datetime <- strptime(data$datetime,"%Y-%m-%d %H:%M:%S")
 ```
 
-Toliau ieğkoma netvarkingø duomenø:
+Toliau ieÅ¡koma netvarkingÅ³ duomenÅ³:
 ```{r}
 table(data$user)
 ```
 
-Reikia iğvalyti testinius vartotojus, suvienodinti skirtingais vardais uşsiregistravusius vartotojus ir patikrinti, ar yra pasikartojanèiø duomenø bei juos pağalinti:
+Reikia iÅ¡valyti testinius vartotojus, suvienodinti skirtingais vardais uÅ¾siregistravusius vartotojus ir patikrinti, ar yra pasikartojanÄiÅ³ duomenÅ³ bei juos paÅ¡alinti:
 ```{r}
 new.data <- data[( data$user!="1vbutkus" & data$user!="aaa" & data$user!="testas" ),]
 n <- length(new.data[(new.data$user=="j" | new.data$user=="ju" | new.data$user=="juste" | new.data$user=="Juste" ),("user")])
@@ -63,9 +63,9 @@ new.data <- new.data[-duplicates]
 table(new.data$user)
 ```
 
-Duomenys sutvarkyti, pasikartojanèiø duomenø nëra.
+Duomenys sutvarkyti, pasikartojanÄiÅ³ duomenÅ³ nÄ—ra.
 
-Randami klausimus praleidæ studentai ir kiek klausimø jie yra praleidæ:
+Randami klausimus praleidÄ™ studentai ir kiek klausimÅ³ jie yra praleidÄ™:
 
 ```{r}
 skipping <- new.data[(new.data$skipped==TRUE),]
@@ -73,7 +73,7 @@ skipping <- table(skipping$user)
 skipping
 ```
 
-Klausimus praleido ğie vartotojai: Dariukxas, Domante Bulovaite, gyse3054, Greta, gretajes, justinasasnauskaite, Karolina, kestous, ogadova, ojautakaite, Raigardas, rokasaleks, SandraKozlovskaja, simonalevickaite, sindeivydas. Skaièiuojama, kas kiek uşduoèiø atliko:
+Klausimus praleido Å¡ie vartotojai: Dariukxas, Domante Bulovaite, gyse3054, Greta, gretajes, justinasasnauskaite, Karolina, kestous, ogadova, ojautakaite, Raigardas, rokasaleks, SandraKozlovskaja, simonalevickaite, sindeivydas. SkaiÄiuojama, kas kiek uÅ¾duoÄiÅ³ atliko:
 
 ```{r}
 all.lessons <- new.data[,c("user","lesson_name")]
@@ -82,7 +82,7 @@ check <- table(all.lessons$user)
 check
 ```
 
-Randami ne visas uşduotis atlikæ studentai ir kiek uşduoèiø jie nëra atlikæ:
+Randami ne visas uÅ¾duotis atlikÄ™ studentai ir kiek uÅ¾duoÄiÅ³ jie nÄ—ra atlikÄ™:
 
 ```{r}
 missing.lessons <- data.frame(16-check[check!=16])
@@ -90,7 +90,7 @@ colnames(missing.lessons) <- c("trukstamu uzduociu skaicius")
 missing.lessons
 ```
 
-Ne visas uşduotis atliko ğie vartotojai: Danielius, Dominykas, edba2903, gretajes, justinasasnauskaite, MildaPie, ojautakaite, simonalevickaite. Randami visas uşduotis be klausimø praleidimo atlikæ studentai:
+Ne visas uÅ¾duotis atliko Å¡ie vartotojai: Danielius, Dominykas, edba2903, gretajes, justinasasnauskaite, MildaPie, ojautakaite, simonalevickaite. Randami visas uÅ¾duotis be klausimÅ³ praleidimo atlikÄ™ studentai:
 
 ```{r}
 no.skipping <- new.data[(new.data$user!="Dariukxas" & new.data$user!="Domante Bulovaite" & new.data$user!="gyse3054" & new.data$user!="Greta" & new.data$user!="gretajes" & new.data$user!="justinasasnauskaite" & new.data$user!="Karolina" & new.data$user!="kestous" & new.data$user!="ogadova" & new.data$user!="ojautakaite" & new.data$user != "Raigardas" & new.data$user!="rokasaleks" & new.data$user!="SandraKozlovskaja" & new.data$user!="simonalevickaite" & new.data$user!="sindeivydas"),]
@@ -101,7 +101,7 @@ complete <- complete[duplicated(complete)]
 complete
 ```
 
-Visas uşduotis atliko ğie vartotojai: emru300, simona1234, aipe00, zagnyte. Toliau atrenkami duomenys laiko skaièiavimams:
+Visas uÅ¾duotis atliko Å¡ie vartotojai: emru300, simona1234, aipe00, zagnyte. Toliau atrenkami duomenys laiko skaiÄiavimams:
 
 ```{r}
 lessons.time <- new.data[(new.data$skipped==FALSE),c("user","lesson_name","takeTime","sysTime","datetime")]
@@ -110,15 +110,15 @@ lessons.time <- lessons.time[is.na(lessons.time$user)!=TRUE,]
 les.names <- new.data[!duplicated(new.data$lesson_name),"lesson_name"] #papildomas uzduociu pavadinimu kintamasis
 ```
 
-Duomenys papildomi nauju kintamuoju - uşduoèiø atlikimo trukme minutëmis:
+Duomenys papildomi nauju kintamuoju - uÅ¾duoÄiÅ³ atlikimo trukme minutÄ—mis:
 
 ```{r}
 time <- difftime(lessons.time$sysTime, lessons.time$datetime, units="mins")
 lessons.time <- cbind(lessons.time, time)
-lessons.time <- lessons.time[!lessons.time$time>60,] #atmetame duomenø iğskirtis
+lessons.time <- lessons.time[!lessons.time$time>60,] #atmetame duomenÃ¸ iÃ°skirtis
 ```
 
-Skaièiuojami kiekvienos uşduoties atlikimo trukmës vidurkiai:
+SkaiÄiuojami kiekvienos uÅ¾duoties atlikimo trukmÄ—s vidurkiai:
 
 ```{r}
 average.time <- replicate(16,0)
@@ -129,7 +129,7 @@ names(average.time) <- les.names
 average.time
 ```
 
-Ğie duomenys lyginami su vartotojø nurodytos uşduoèiø atlikimo trukmës vidurkiais (prieğ tai jie apskaièiuojami):
+Å ie duomenys lyginami su vartotojÅ³ nurodytos uÅ¾duoÄiÅ³ atlikimo trukmÄ—s vidurkiais (prieÅ¡ tai jie apskaiÄiuojami):
 
 ```{r}
 average.takeTime <- replicate(16,0)
@@ -141,9 +141,9 @@ average
 mean(average.takeTime-average.time)
 ```
 
-Akivaizdu, kad vartotojai gana realiai ásivertina savo laikà, vienà kartà mano, kad atlieka uşduotá ilgiau, kità - trumpiau ir tø svyravimø vidurkis yra nepilnos 2 minutës, taigi, vidutiniğkai vartotojai uşduoèiai skirtà laikà ávertina kaip nepilnomis 2 minutëmis ilgesná negu skyrë iğ tiesø.
+Akivaizdu, kad vartotojai gana realiai Ä¯sivertina savo laikÄ…, vienÄ… kartÄ… mano, kad atlieka uÅ¾duotÄ¯ ilgiau, kitÄ… - trumpiau ir tÅ³ svyravimÅ³ vidurkis yra nepilnos 2 minutÄ—s, taigi, vidutiniÅ¡kai vartotojai uÅ¾duoÄiai skirtÄ… laikÄ… Ä¯vertina kaip nepilnomis 2 minutÄ—mis ilgesnÄ¯ negu skyrÄ— iÅ¡ tiesÅ³.
 
-Skaièiuojamas vidutinis bandymø skaièius kiekvienai uşduoèiai ir tikrinama, kuriai uştuoèiai teko daugiausia bandymø:
+SkaiÄiuojamas vidutinis bandymÅ³ skaiÄius kiekvienai uÅ¾duoÄiai ir tikrinama, kuriai uÅ¾tuoÄiai teko daugiausia bandymÅ³:
 
 ```{r}
 attempts <- new.data[(new.data$skipped==FALSE),c("user","lesson_name","attempt")]
@@ -157,9 +157,9 @@ names(average.attempts) <- les.names
 average.attempts[average.attempts==max(average.attempts)]
 ```
 
-Pagal vidutiná bandymø skaièiø galima daryti iğvadà, kad sunkiausia uşduotis yra Sequences of Numbers, nes jai prireikë vidutiniğkai daugiausiai bandymø.
+Pagal vidutinÄ¯ bandymÅ³ skaiÄiÅ³ galima daryti iÅ¡vadÄ…, kad sunkiausia uÅ¾duotis yra Sequences of Numbers, nes jai prireikÄ— vidutiniÅ¡kai daugiausiai bandymÅ³.
 
-Informacijos ğaltiniai:
+Informacijos Å¡altiniai:
 
 https://github.com/opetchey/RREEBES/wiki/Reading-data-and-code-from-an-online-github-repository
 

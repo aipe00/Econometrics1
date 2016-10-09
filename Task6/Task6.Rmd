@@ -37,7 +37,7 @@ class(data$datetime)
 class(data$skipped)
 ```
 
-Kadangi sysTime ir datetime nurodo laiką, tipas character jiems netinkamas, todėl pakeièiamas tipas:
+Kadangi sysTime ir datetime nurodo laiką, tipas character jiems netinkamas, todėl pakeičiamas tipas:
 ```{r}
 data$sysTime <- strptime(data$sysTime,"%Y-%m-%d %H:%M:%S")
 data$datetime <- strptime(data$datetime,"%Y-%m-%d %H:%M:%S")

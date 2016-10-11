@@ -1,0 +1,62 @@
+---
+title: "Kauliukai"
+author: "Aina Petronytė"
+date: '2016 m spalis 11 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(prob)
+```
+
+##Kauliukai
+
+Du žaidėjai žaidžia tokį žaidimą. Pirmasis žaidėjas meta tris kauliukus ir fiksuoja iškritusių taškų sumą. Antrasis žaidėjas ridena du kauliukus ir skaičiuoja iškritusių taškų sumą. Laimi tas žaidėjas, kurio taškų suma yra didesnė. Jeigu taškų sumos yra lygios, tai eksperimentas kartojamas iš naujo (ir taip kartojama tol, kol galiausiai nustatomas laimėtojas). Randame visus galimus kiekvieno žaidėjo rezultatus ir suskaičiuojame jų sumas:
+
+```{r}
+player1 <- rolldie(3, 6, TRUE)
+player2 <- rolldie(2, 6, TRUE)
+player1 <- addrv(player1, sum, name = "sum1")
+player2 <- addrv(player2, sum, name = "sum2")
+```
+
+Sudarome pirmojo žaidėjo sumų dažnių lentelę, ir sukuriame šių sumų vektorių tolimesniems skaičiavimams:
+
+```{r}
+a <- as.vector(table(player1$sum1))
+a
+sums <- 3:18
+```
+
+Skaičiuojame tikimybes, kad antorojo žaidėjo kauliukų taškų suma mažesnė už pirmojo kiekvienai galimai pirmojo žaidėjo kauliukų taškų sumai - kiekvienam pirmojo žaidėjo rezultatui randame tinkamų antrojo rezultatų skaičių ir dalijame iš jo variantų skaičiaus:
+
+```{r}
+length(a)
+wins <- matrix(0, 16, 6^2)
+for (i in 1:16) {
+  wins[i,] <- (player2$sum2 < sums[i])
+}
+prob <- as.vector(rowSums(wins)/6^2)
+```
+
+Prie šių duomenų prijungiame tikimybes, kad pirmajam žaidėjui gauti atitinkamas sumas ir sudauginame tikimybę, kad antrojo žaidėjo rezultatas bus mažesnis už pirmojo rezultatą su tikimybe, kad pirmasis žaidėjas gaus atitinkamą rezultatą, kiekvienai galimai sumai, taip gauname pirmojo žaidėjo laimėjimo tikimybę kiekvienai sumai:
+
+```{r}
+prob <- as.data.frame(rbind(prob, a/6^3))
+prob[3,] <- prob[1,]*prob[2,]
+colnames(prob) <- as.character(3:18)
+rownames(prob) <- c("sum1 prob", ">sum2 prob", "sum1>sum2 prob")
+prob
+```
+
+Sudėję gautas tikimybes, gauname tikimybę, kad pirmasis žaidėjas laimės:
+
+```{r}
+sum(prob[3,])
+```
+
+Taigi, pirmojo žaidėjo laimėjimo tikimybė lygi 0.7785494.
+
+Šaltiniai:
+R help

@@ -64,4 +64,4 @@ Taip atrodo balanso tankis.
 
 Šaltiniai:
 
-Sundar Dorai-Raj, Binomial Confidence Intervals For Several Parameterizations, https://cran.r-project.org/web/packages/binom/binom.pdf
+R help

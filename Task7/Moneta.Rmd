@@ -1,0 +1,67 @@
+---
+title: "Moneta"
+author: "Aina Petronytė"
+date: '2016 m spalis 12 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Moneta
+
+Tarkime metama moneta. Jeigu iškrenta herbas, tai laimite 12 EUR. Jeigu skaičius, tai pralošiate 10 EUR. Bus žaidžiama 100 kartų ir gauti rezultatai sumuojami. Pirmiausia surandame galimus balanso variantus pagal iškritusių herbų skaičių:
+
+```{r}
+herbai <- 0:100 #herbu skaicius
+balansas <- replicate(100,0)
+for (i in 1:101){
+  balansas[i] = herbai[i]*12-(100-herbai[i])*10
+}
+balansas #galimi variantai
+```
+
+Dabar galime įvertinti, kurie yra teigiami, o kurie neigiami:
+
+```{r}
+teigiamas <- balansas > 0
+sum(!teigiamas)
+herbai[46]
+```
+
+Išsiaiškinome, kad pirmieji 46 variantai nėra teigiami ir 46 varianto herbų skaičius yra 45. Taigi, teigiamo balanso tikimybė lygi tikimybei, kad herbų skaičius didesnis nei 45. Kadangi monetos metimas turi binominį skirstinį, pasinaudosime binominio skirstinio tikimybės formule:
+
+```{r}
+tikimybe <- pbinom(45, 100, 0.5, lower.tail=FALSE)
+tikimybe
+```
+
+Radome, kad teigiamo balanso tikimybė lygi 0.8158992. Dabar skaičiuosime balanso 95% pasikliautinąjį intervalą:
+
+```{r}
+qbinom(tikimybe, 100, 0.5, lower.tail = FALSE)
+qbinom(tikimybe, 100, 0.5)
+```
+
+Pasinaudoję binominio skirstinio kvantilių funkcija, radome pasikliautinojo intervalo galus: (45;54). Kadangi herbų skaičius prasideda nuo 0, tai vektoriaus herbai indeksai yra vienetu didesni už patį herbų skaičių ir balanso vektorius sugeneruotas pagal šį vektorių, vadinasi, indeksai atitinka. Pagal indeksus galime rasti atitinkamus balanso pasikliautinojo intervalo galus:
+
+```{r}
+balansas[44]
+balansas[53]
+```
+
+Gauname balanso 95% pasikliautinąjį intervalą: (-54;144).
+
+Nubraižysime balanso tankio funkciją. Pirmiausia sukursime vektorių iš visų balanso reikšmių tankio, naudodami binominio skirstinio tankio funkciją kiekvienam herbų skaičiui, ir pavaizduosime tankio priklausomybę nuo balanso:
+
+```{r}
+tankis <- dbinom(herbai, 100, prob=0.5)
+plot(balansas,tankis)
+```
+
+Taip atrodo balanso tankis.
+
+Šaltiniai:
+
+Sundar Dorai-Raj, Binomial Confidence Intervals For Several Parameterizations, https://cran.r-project.org/web/packages/binom/binom.pdf

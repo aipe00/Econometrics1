@@ -1,0 +1,29 @@
+---
+title: "CRT"
+author: "Aina Petronytė"
+date: '2016 m spalis 15 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## CRT
+
+Generuojama n atsitiktinių dydžių turinčių Beta skirstinį su parametrais alpha=beta=0.5. Iš šių atsitiktinių dydžių suskaičiuojamas aritmetinis vidurkis. Sukuriama funkcija tokio vidurkio skaičiavimui, kuri sugeneruoja atsitiktinius dydžius, turinčius beta skirstinį su tokiais parametrais ir išveda jų vidurkį :
+
+```{r}
+vidurkis <- function(n) mean(rbeta(n,0.5,0.5))
+```
+
+Braižomas vidurkio tankis, kai n=100. Tam sugeneruojama 1000 vidurkių imtis, kur vidurkius skaičiuoja prieš tai sukurta funkcija, jos argumentu nustatant 100, tuomet naudojama funkcija density sugeneruotų vidurkių tankiui ir nubraižomas jo grafikas:
+
+```{r}
+vidurkiai <- replicate(1000, vidurkis(100))
+plot(density(vidurkiai), main="Vidurkio tankio funkcija", xlab="Vidurkis", ylab="Tankis")
+```
+
+Šaltiniai:
+
+R help

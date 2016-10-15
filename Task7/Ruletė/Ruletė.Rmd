@@ -1,0 +1,33 @@
+---
+title: "Ruletė"
+author: "Aina Petronytė"
+date: '2016 m spalis 15 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ruletė
+
+Nagrinėsime standartinę kazino ruletę. Skaičiuojamas balansas po 1000 vienodų statymų ant vienos pasirinktos spalvos. Naudojant Monte-Carlo modeliavimą, sugeneruojamas 1000 balanso realizacijų, statymą pažymint 1. Tikimybė išlošti yra 18/37, nes pasirinktos spalvos skyrelių yra 18, o pralošti - 19/37, nes kitos spalvos yra 18 ir vienas papildomas.
+
+```{r}
+balansas <- replicate(1000, sum(sample(c(1,-1), size=1000, replace=TRUE, prob=c(18/37, 19/37))))
+```
+
+Skaičiuojama tikimybė, kad balansas bus teigiamas. Surandamos teigiamos balanso realizacijos ir jų suma dalijama iš visų realizacijų skaičiaus:
+
+```{r}
+teigiamas <- balansas > 0
+tikimybe <- sum(teigiamas)/1000
+tikimybe
+```
+
+Reikia rasti apytikslę x reikšmę, kuriai galioja nelygybė P(balansas<x) = 0.25. Tam naudojama quantile funkcija:
+
+```{r}
+x <- quantile(balansas, probs=0.25)
+x
+```

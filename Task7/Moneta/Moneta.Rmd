@@ -1,0 +1,95 @@
+---
+title: "Moneta"
+author: "Aina Petronytė"
+date: '2016 m spalis 12 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Moneta
+
+Tarkime metama moneta. Jeigu iškrenta herbas, tai laimite 12 EUR. Jeigu skaičius, tai pralošiate 10 EUR. Bus žaidžiama 100 kartų ir gauti rezultatai sumuojami. Monte-Carlo metodu sugeneruojame 1000 nepriklausomų balanso realizacijų:
+
+```{r}
+n = 1000
+balansas1 <- replicate(n, sum(sample(c(-10, 12), 100, prob=c(0.5, 0.5), TRUE)))
+```
+
+Patikriname, kurios realizacijos yra teigiamos:
+
+```{r}
+teigiamas1 <- balansas1 > 0
+```
+
+Suskaičiuojame teigiamo balanso tikimybę, teigiamų realizacijų skaičių padalijant iš visų realizacijų skaičiaus:
+
+```{r}
+tikimybe1 <- sum(teigiamas1)/n
+tikimybe1
+```
+
+Palyginsime šią tikimybe su teorine. Pirmiausia surandame galimus balanso variantus pagal iškritusių herbų skaičių:
+
+```{r}
+herbai <- 0:100 #herbu skaicius
+balansas <- replicate(100,0)
+for (i in 1:101){
+  balansas[i] = herbai[i]*12-(100-herbai[i])*10
+}
+balansas #galimi variantai
+```
+
+Dabar galime įvertinti, kurie yra teigiami, o kurie neigiami:
+
+```{r}
+teigiamas <- balansas > 0
+sum(!teigiamas)
+herbai[46]
+```
+
+Išsiaiškinome, kad pirmieji 46 variantai nėra teigiami ir 46 varianto herbų skaičius yra 45. Taigi, teigiamo balanso tikimybė lygi tikimybei, kad herbų skaičius didesnis nei 45. Kadangi monetos metimas turi binominį skirstinį, pasinaudosime binominio skirstinio tikimybės formule:
+
+```{r}
+tikimybe <- pbinom(45, 100, 0.5, lower.tail=FALSE)
+tikimybe
+tikimybe1 #empirine tikimybe
+```
+
+Matome, kad empirinė tikimybė panaši į teorinę.
+
+Dabar skaičiuosime balanso 95% pasikliautinąjį intervalą empirinei ir teorinei tikimybei, tam naudosime binominio skirstinio kvantilių funkciją su tikimybėmis 0,025 ir 0,975, kadangi tarp jų yra 0,95:
+
+```{r}
+ap1 <- qbinom(tikimybe1, 100, 0.025, lower.tail=FALSE)
+virs1 <- qbinom(tikimybe1, 100, 0.975)
+intervalas1 <- c(ap1, virs1)
+ap <- qbinom(tikimybe, 100, 0.025, lower.tail = FALSE)
+virs <- qbinom(tikimybe, 100, 0.975)
+intervalas <- c(ap, virs)
+intervalas1 #empirines tikimybes pasikliautinojo intervalo reziai
+intervalas #teorines tikimybes pasikliautinojo intervalo reziai
+```
+
+Nubraižysime balanso tankio funkciją empiriniams duomenims:
+
+```{r}
+plot(density(balansas1), main="Balanso tankis", xlab="Balansas", ylab="Tankis")
+```
+
+Nubraižysime teorinio balanso tankio funkciją. Pirmiausia sukursime vektorių iš visų balanso reikšmių tankio, naudodami binominio skirstinio tankio funkciją kiekvienam herbų skaičiui, ir pavaizduosime tankio priklausomybę nuo balanso, taip pat pridėsime empirinio balanso tankio funkciją:
+
+```{r}
+tankis <- dbinom(herbai, 100, prob=0.5)
+plot(balansas, tankis, main="Balanso tankis", xlab="Balansas", ylab="Tankis")
+points(density(balansas1), col="red")
+legend(450, 0.08, "Empirinio balanso tankis", col="red", pch=1)
+```
+
+Taip atrodo balanso tankis.
+
+Šaltiniai:
+
+R help

@@ -1,0 +1,94 @@
+---
+title: "Kauliukai"
+author: "Aina Petronytė"
+date: '2016 m spalis 15 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(prob)
+```
+
+## Kauliukai
+
+Du žaidėjai žaidžia tokį žaidimą: pirmasis žaidėjas meta tris kauliukus ir fiksuoja iškritusių taškų sumą, antrasis žaidėjas ridena du kauliukus ir skaičiuoja iškritusių taškų sumą. Laimi tas žaidėjas, kurio taškų suma yra didesnė. Jeigu taškų sumos yra lygios, tai eksperimentas kartojamas iš naujo, kol nustatomas laimėtojas. Atliekamas Monte-Carlo modeliavimas ir sugeneruojama po 1000 dviejų žaidėjų iškritusių taškų sumų nepriklausomų realizacijų ir jos atitinkamai susiejamos:
+
+```{r}
+sum1 <- replicate(1000, sum(sample(1:6, 3, replace = TRUE)))
+sum2 <- replicate(1000, sum(sample(1:6, 2, replace = TRUE)))
+sums <- rbind(sum1, sum2)
+```
+
+Dabar kiekvienas stulpelis atitinka vieną žaidimo bandymą. Kadangi bandymas atmetamas, kai abiejų žaidėjų rezultatai sutampa, tokie duomenys pašalinami ir fiksuojama, kiek liko baigčių:
+
+```{r}
+sums <- sums[,!(sums[1,]==sums[2,])]
+n = ncol(sums)
+```
+
+Toliau skaičiuojama, kiek yra pirmajam žaidėjui palankių baigčių:
+
+```{r}
+win1 <- sum(sums[1,]>sums[2,])
+win1
+```
+
+Apskaičiuojama pirmojo žaidėjo laimėjimo tikimybė šiam įvykiui palankių baigčių skaičiaus padalinant iš visų baigčių skaičiaus:
+
+```{r}
+prob1 <- win1/n
+prob1
+```
+
+Galima palyginti gautą tikimybę su teorine pirmojo žaidėjo laimėjimo tikimybe. Pirmiausia tam sugeneruojamos visų galimų baigčių imtys ir jų taškų sumos abiems žaidėjams:
+
+```{r}
+player1 <- rolldie(3, 6, TRUE) #naudojamos funkcijos is paketo "prob"
+player2 <- rolldie(2, 6, TRUE)
+player1 <- addrv(player1, sum, name = "sum1")
+player2 <- addrv(player2, sum, name = "sum2")
+```
+
+Randamos pirmojo žaidėjo rezultatų tikimybės, kiekvienos sumos dažnį padalinant iš visų baigčių skaičiaus:
+
+```{r}
+a <- as.vector(table(player1$sum1))
+prob <- a/6^3
+```
+
+Įvedami tolimesniems skaičiavimams reikalingi kintamieji:
+
+```{r}
+length(a) #kiek yra pirmojo zaidejo sumu variantu
+sums <- 3:18 #pirmojo zaidejo galimos sumos
+sums2 <- 2:12 #antrojo zaidejo galimos sumos
+b <- as.vector(table(player2$sum2)) #antrojo zaidejo sumu dazniai
+length(b) #kiek yra antrojo zaidejo variantu
+sums[1:10] #sutampancios sumos
+```
+
+Skaičiuojamos tikimybės, kad pirmoji suma didesnė už antrąją: pirmojo žaidėjo sumoms, kurios nebūtinai didesnės už antrojo, kiekvienos sumos tikimybė dauginama iš tikimybės, kad antrajam žaidėjui iškris mažesnė suma (ši tikimybė apskaičiuojama sudedant tokių sumų dažnius ir padalijant iš visų galimų baigčių skaičiaus, atmetus baigčių, kai sumos yra lygios, skaičių). Toms sumoms, kurios bet kuriuo atveju yra didesnės už antrojo žaidėjo galimas sumas, tiesiog priskiriamos jų iškritimo tikimybės:
+
+```{r}
+wins <- replicate(16,0)
+for (i in 1:10) {
+  wins[i] <- prob[i]*sum(b[(sums2 < sums[i])])/(6^2-b[(sums2 == sums[i])])
+}
+wins[11:16] <- prob[11:16]
+wins
+```
+
+Gautos kiekvienos sumos tikimybės sudedamos ir gaunama tikimybė, kad laimės pirmasis žaidėjas:
+
+```{r}
+sum(wins)
+prob1 #prisimenama, kokia tikimybe gauta eksperimento budu
+```
+
+Taigi, empirinė tikimybė panaši į teorinę.
+
+Šaltiniai:
+
+R help
+

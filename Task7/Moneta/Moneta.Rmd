@@ -69,8 +69,8 @@ intervalas1 <- c(ap1, virs1)
 ap <- qbinom(tikimybe, 100, 0.025, lower.tail = FALSE)
 virs <- qbinom(tikimybe, 100, 0.975)
 intervalas <- c(ap, virs)
-intervalas1 #empirines tikimybes pasikliautinojo intervalo reziai
-intervalas #teorines tikimybes pasikliautinojo intervalo reziai
+balansas1[intervalas1] #empirinio balanso pasikliautinojo intervalo reziai
+balansas[intervalas] #teorinio balanso pasikliautinojo intervalo reziai
 ```
 
 Nubraižysime balanso tankio funkciją empiriniams duomenims:

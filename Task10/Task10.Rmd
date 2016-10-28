@@ -1,0 +1,89 @@
+---
+title: "Task 10"
+author: "Aina Petronytė"
+date: '2016 m spalis 21 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+set.seed(15)
+```
+
+## Task 10
+
+Tegu atsitiktinis dydis X turi normalųjį skirstinį su vidurkiu 1 ir standartiniu nuokrypiu 2. Sugeneruojama 100 X realizacijų imtis:
+
+```{r}
+x <- rnorm(100, 1, 2)
+```
+
+Tikrinama, ar imties vidurkis lygus vienam, naudojantis t - testu:
+
+H~0~ : $\mu = 1$
+
+H~1~ : $\mu \neq 1$
+
+Pasikliovimo lygmuo 0,95.
+
+```{r}
+t.test(x, mu = 1)
+```
+
+Gauta p reikšmė yra didesnė nei 0,05, t.y., reikšmingumo lygmuo, todėl H~0~ priimama. Imties vidurkis statistiškai reikšmingai nesiskiria nuo teorinio, todėl galima teigti, kad vidurkis lygus 1. Tą pačią išvadą galima daryti iš kitų t - testo išvesčių: /mu patenka į išvestą pasikliautinąjį intervalą, taip pat galima įsitikinti, kad apskaičiuota t reikšmė yra mažesnė už Stjudento skirstinio su 99 laisvės laipsniais teorinę 97,5% kvantilio reikšmę:
+
+```{r}
+qt(0.975, 99)
+```
+
+Toliau sugeneruojama 10^4^ tokių imčių: 
+
+```{r}
+kartojimai <- replicate(10^4, rnorm(100, 1, 2))
+```
+
+Sukuriama funkcija testas, t - testo pagalba tikrinanti, tą pačią hipotezę
+
+H~0~ : $\mu = 1$
+
+H~1~ : $\mu \neq 1$
+
+ir išvedanti atsakymą, ar H~0~ priimama remiantis gauta p reikšme. Pasikliovimo lygmuo 95%:
+
+```{r}
+testas <- function(m){
+  p <- t.test(m, mu = 1)$p.value
+  isvada <- p >= 0.05
+  return(isvada)
+}
+```
+
+Sukurta hipotezės tikrinimo funkcija testas pritaikoma kiekvienai iš sugeneruotų imčių (kiekvienam matricos stulpeliui):
+
+```{r}
+testai <- apply(kartojimai, 2, testas)
+```
+
+Suskaičiuojama, kiek kartų H~0~ atmesta:
+
+```{r}
+kiek <- sum(!testai)
+kiek
+```
+
+Atmestų H~0~ skaičius išreiškiamas procentais:
+
+```{r}
+proc <- kiek/10^4
+proc
+```
+
+Taigi, nors imtys buvo generuojamos su teoriniu vidurkiu lygiu 1, hipotezė apie imties vidurkio lygybę 1 buvo atmetama beveik 5% atvejų. Kadangi hipotezės tikrinimo pasikliovimo lygmuo buvo 95%, tai tikimybė padaryti pirmos rūšies klaidą, t.y., atmesti teisingą H~0~ ir buvo 5%.
+
+Šaltiniai:
+
+https://www.r-bloggers.com/two-sample-students-t-test-1/
+
+http://www.dummies.com/programming/r/how-to-extract-data-test-results-with-r/
+
+Pirma užduoties dalis daryta kartu su Edita Basyte.

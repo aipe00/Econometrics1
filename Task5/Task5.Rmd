@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library("prob")
 ```
 
 ## Random variable challenge
@@ -28,7 +29,7 @@ Randamas teorinis S skirstinys:
 library(prob)
 ```
 ```{r}
-variantai <- rolldie(3) #funkcija rasta knygoje Kerns, G. Jay. 2011. “Introduction to Probability and Statistics Using R.”
+variantai <- rolldie(3) #funkcija iš paketo "prob"
 sumos <- rowSums(variantai)
 teor.daznis <- table(sumos)
 tikimybes <- matrix(teor.daznis/6^3)
@@ -87,4 +88,5 @@ legend(6e+04, 9.7, "teorine dispersija", col="red", lty=1)
 ```
 
 Informacijos šaltiniai:
+
 Kerns, G. Jay. 2011. “Introduction to Probability and Statistics Using R.”

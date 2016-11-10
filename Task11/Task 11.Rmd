@@ -1,0 +1,60 @@
+---
+title: "Task 11"
+author: "Aina Petronytė"
+date: '2016 m lapkritis 10 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Task 11
+
+Užduočiai naudojamas duomenų masyvas longley iš paketo datasets:
+
+```{r}
+library("datasets")
+data <- longley
+head(longley)
+```
+
+Iš duomenų masyvo kintamųjų GNP ir Employed sukuriamas tiesinės regresijos modelis, prognozuojamas kintamasis - GNP:
+
+```{r}
+GNP <- data$GNP
+employed <- data$Employed
+ties.reg = lm(GNP~employed)
+```
+
+Toliau pateikiamas modelio apibendrinimas:
+
+```{r}
+summary(ties.reg)
+```
+
+Tiesinės regresijos modelio Residuals rodo duomenų pasklidimo apie regresijos tiesę charakteristikas - minimumą, pirmąjį kvartilį, medianą, trečiąjį kvartilį ir maksimumą. Coefficients  stulpelis Estimate parodo lygties koeficientų $\beta$~0~ ir $\beta$~1~ įverčius: $\beta$~0~ = -1430.482, $\beta$~1~ = 27.836. $\beta$~0~ reikšmė yra vidutinis GNP, kai Employed = 0, šie duomenys gali būti neteisingi, nes duomenų masyve mažiausia Employed reikšmė buvo virš 60. $\beta$~1~ yra vidutinio GNP didėjimas, kai vienetu didėja Employed. Stulpelis Std. Error parodo šių įverčių standartinius nuokrypius, t value parodo Stjudento kriterijaus t reikšmę, o Pr(>|t|) - reikšmingumo lygmenis, iš kurių galima spręsti, kad koeficientai reikšmingai skiriasi nuo nulio.
+
+Toliau randamos modelio prognozuojamos reikšmės taškuose 62, 65 ir 68:
+
+```{r}
+prog = predict(ties.reg, newdata=data.frame(employed=c(62, 65, 68)))
+prog
+```
+
+Braižoma kintamųjų sklaidos diagrama su tiesinės regresijos tiese ir naujomis prognozėmis:
+
+```{r}
+plot(employed, GNP, xlab='Employed', ylab='GNP', main='Duomenu sklaida')
+abline(ties.reg, col='blue')
+points(c(62, 65, 68), prog, col='red')
+legend(60, 550, c("Turimi duomenys", "Regresijos tiese", "Duomenų prognozės"), lty=c(0,1,0), pch=c(1,NA,1), col=c("black", "blue", "red"))
+```
+
+Šaltiniai:
+
+Kerns, G. Jay. 2011. “Introduction to Probability and Statistics Using R.”
+
+Dependent and independent variables, Wikipedia https://en.wikipedia.org/wiki/Dependent_and_independent_variables
+
+Simple Linear Regression by Ralph, R-bloggers, 2010 https://www.r-bloggers.com/simple-linear-regression-2/

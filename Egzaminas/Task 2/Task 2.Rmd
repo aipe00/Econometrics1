@@ -1,0 +1,104 @@
+---
+title: "2 užduotis"
+author: "Aina Petronytė"
+date: '2017 m sausis 20 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##2 užduotis
+
+Tarkime, $X_1$ ir $X_2$ yra nepriklausomi, $X_1 \sim N(3, 2)$, $X_2 \sim N(-1, 3)$ ir $X = X_1 + X_2$. Kadangi $X$ yra normaliųjų atsitiktinių dydžių suma, tai jo vidurkis yra tų atsitiktinių dydžių vidurkių suma ir dispersija yra tų atsitiktinių dydžių dispersijų suma, taigi, 2 ir 5. Sugeneruojamas normalusis atsitiktinis dydis $X$ su tokiais parametrais:
+
+```{r}
+X = rnorm(10000, mean = 2, sd = sqrt(5))
+```
+
+Išbraižoma teorinė atsitiktinio dydžio $X$ tankio funkcija:
+
+```{r}
+plot(X, dnorm(X, mean = 2, sd = sqrt(5)), xlab = "X", ylab = "tankis")
+```
+
+Sugeneruojami atsitiktiniai dydžiai $X_1$ ir $X_2$ su duotais parametrais ir atsitiktinis dydis $X$ kaip jų suma:
+
+```{r}
+X1 = rnorm(10000, mean = 3, sd = sqrt(2))
+X2 = rnorm(10000, mean = -1, sd = sqrt(3))
+ktX = X1 + X2
+```
+
+Palyginimui nubraižomas teorinės ir empirinės tankio funkcijos grafikas:
+
+```{r}
+plot(X, dnorm(X, mean = 2, sd = sqrt(5)), xlab = "X", ylab = "tankis" )
+lines(density(ktX), col = 3)
+legend(5, 0.15, c("Teorinė funkcija", "Empirinė funkcija"), lty = c(0, 1), pch = c(1, NA), col = c(1, 3))
+```
+
+Tikrinamos empirinės sklaidos charakteristikos. Vidurkis:
+
+```{r}
+mean(ktX)
+```
+
+Teorinis vidurkis yra 2. Standartinis nuokrypis:
+
+```{r}
+sd(ktX)
+```
+
+Teorinis standartinis nuokrypis:
+
+```{r}
+sqrt(5)
+```
+
+Mediana:
+
+```{r}
+median(ktX)
+```
+
+Teorinė mediana yra 2, sutampa su vidurkiu. Taigi, empirinės charakteristikos šiek tiek skiriasi. Toliau skaičiuojama teorinė tikimybė įvykio $|X| > 2$:
+
+```{r}
+tik <- pnorm(-2, mean = 2, sd = sqrt(5)) + pnorm(2, mean = 2, sd = sqrt(5), lower.tail = FALSE)
+tik
+```
+
+Sukuriama funkcija, kuri sugeneruotų atsitiktinį dydį ir suskaičiuotų šią tikimybę empiriniu būdu:
+
+```{r}
+emp.tik <- function(){
+  X1 = rnorm(10000, mean = 3, sd = sqrt(2))
+  X2 = rnorm(10000, mean = -1, sd = sqrt(3))
+  X = X1 + X2
+  a = (X > 2) | (X < -2)
+  ats = sum(a)/10000
+  return(ats)
+}
+emp.tik()
+```
+
+Funkcija paleidžiama 10000 kartų ir randamas sugeneruotų tikimybių vidurkis:
+
+```{r}
+b <- replicate(10000, emp.tik())
+mean(b)
+```
+
+Taigi, empirinė tikimybė panaši į teorinę.
+
+Šaltiniai:
+
+Sum of normally distributed random variables, Wikipedia https://en.wikipedia.org/wiki/Sum_of_normally_distributed_random_variables
+
+Normal distribution, Wikipedia https://en.wikipedia.org/wiki/Normal_distribution
+
+The Normal Distribution, R Documentation https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Normal.html
+
+Cross Validated http://stats.stackexchange.com/questions/237237/what-is-the-difference-between-theoretical-distribution-and-empirical-distributi

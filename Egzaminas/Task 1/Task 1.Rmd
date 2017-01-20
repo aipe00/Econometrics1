@@ -1,0 +1,53 @@
+---
+title: "1 užduotis"
+author: "Aina Petronytė"
+date: '2017 m sausis 20 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Pagal pateiktą kodą sugeneruojamas x reikšmių vektorius:
+
+```{r}
+set.seed(1234567890)
+x <- rnorm(5000)
+```
+
+Randami x reikšmių vidurkio ir standartinio nuokrypio įverčiai vid ir stn:
+
+```{r}
+vid <- mean(x)
+stn <- sd(x)
+vid
+stn
+```
+
+Gauti įverčiai panašūs į numatytuosius teorinius parametrus (rnorm pagal nutylėjimą generavo reikšmes su vidurkiu 0 ir standartiniu nuokrypiu 1). Toliau nustatoma, kurios reikšmės yra išskirtys, t.y., mažesnės už $\bar{X} - 3\hat{sd}$ arba didesnės už $\bar{X} + 3\hat{sd}$ :
+
+```{r}
+a <- which((x < vid - 3*stn) | (x > vid + 3*stn))
+a
+```
+
+Iš duomenų atrenkamos išskirtys, pavadinamos atitinkamais indeksais ir šios reikšmės išspausdinamos su jų indeksais vektoriuje x:
+
+```{r}
+ats <- x[a]
+names(ats) = a
+ats
+```
+
+Tada į naują vektorių įrašomos likusios reikšmės, t.y., sukuriamas vektorius be išskirčių:
+
+```{r}
+newx <- x[-a]
+```
+
+Nubraižoma jo histograma:
+
+```{r}
+hist(newx, xlab = "x be išskirčių", ylab = "dažnis", main = "Histograma")
+```

@@ -1,0 +1,58 @@
+---
+title: "3 užduotis"
+author: "Aina Petronytė"
+date: '2017 m sausis 20 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(RCurl)
+```
+
+##3 užduotis
+
+Nuskaitomi duomenys, praleidžiamos eilutės su paaiškinimu:
+
+```{r}
+data <- read.csv(text=getURL("https://raw.githubusercontent.com/1vbutkus/Econometrics1/master/Egzaminas/data.csv"), stringsAsFactors=FALSE, skip = 7, sep = ";") # paketas RCurl
+```
+
+Išvalomi duomenys su trūkstamomis reikšmėmis:
+
+```{r}
+my.data <- data[( data$kaina != "MISSING" & data$rida != "MISSING" & data$amzius != "MISSING" & data$galia != "MISSING" & data$markesKodas != "MISSING" ),]
+```
+
+Sutvarkomi duomenų tipai:
+
+```{r}
+sapply(my.data, class)
+my.data$kaina <- as.numeric(my.data$kaina)
+my.data$amzius <- as.numeric(my.data$amzius)
+```
+
+Keičiant amžiaus tipą, atsirado NA reikšmių, tokie duomenys taip pat išvalomi:
+
+```{r}
+a <- is.na(my.data$amzius)
+my.data <- my.data[!a,]
+```
+
+Apžvelgiami duomenys:
+
+```{r}
+summary(my.data)
+```
+
+Išvestyje matomos kiekvieno skaitinio kintamojo charrakteristikos: minimumas, pirmasis kvartilis, mediana, vidurkis, trečiasis kvartilis, maksimumas. Pavyzdžiui, kainos vidurkis yra 11741, maksimumas 33518 ir t.t. Kadangi tvarkant duomenų tipus pasinaikino amžiaus reikšmės > 20, tai duomenys išsikreipė. Tada tikriname koreliaciją tarp kintamųjų:
+
+```{r}
+cor(my.data[,1:4])
+```
+
+Toliau duomenys vaizduojami grafiškai:
+
+```{r}
+plot(my.data[,1:4])
+```
